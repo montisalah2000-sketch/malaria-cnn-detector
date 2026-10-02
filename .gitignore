@@ -1,0 +1,20 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environment
+.venv/
+venv/
+
+# Model and data artifacts
+checkpoints/
+features/
+*.keras
+*.h5
+*.npz
+*.npy
+
+# OS files
+.DS_Store
+Thumbs.db
