@@ -1,25 +1,16 @@
-# CNN for Malaria Cell Detection and Feature Extraction
+# Malaria Cell CNN Pipeline
 
-This project trains a convolutional neural network (CNN) to classify malaria cell images as either:
+This project includes a complete end-to-end CNN pipeline for malaria classification.
 
-- Parasitized
-- Uninfected
+## Dataset layout
 
-It also exposes a feature extractor that can be used to obtain learned deep representations from the trained model for downstream tasks like clustering, anomaly detection, or transfer learning.
-
-## Dataset structure
-
-Organize your dataset like this:
+Use this structure:
 
 ```text
 data/
 ├── train/
 │   ├── Parasitized/
-│   │   ├── img_001.png
-│   │   └── ...
 │   └── Uninfected/
-│       ├── img_001.png
-│       └── ...
 ├── val/
 │   ├── Parasitized/
 │   └── Uninfected/
@@ -28,56 +19,40 @@ data/
     └── Uninfected/
 ```
 
-If you are using the NIH Malaria dataset, it commonly follows a similar pattern with `Parasitized` and `Uninfected` subfolders.
-
-## Installation
+## Install dependencies
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Training
+## Train and evaluate
 
 ```bash
 python src/train_cnn.py \
   --train-dir data/train \
   --val-dir data/val \
-  --epochs 20 \
+  --test-dir data/test \
+  --epochs 25 \
   --batch-size 32 \
+  --image-size 224 \
   --output-dir checkpoints
 ```
 
-This will train the CNN and save the best model as:
+## Outputs
 
-```text
-checkpoints/best_model.keras
-```
+The script saves:
 
-## Feature extraction
+- `checkpoints/best_model.keras` — best trained model
+- `checkpoints/metrics.json` — final accuracy, precision, recall, and F1
+- `checkpoints/classification_report.txt` — full precision/recall/F1 report
+- `checkpoints/confusion_matrix.png` — confusion matrix heatmap
+- `checkpoints/training_history.json` — loss and metric history
 
-```bash
-python src/extract_features.py \
-  --model-path checkpoints/best_model.keras \
-  --data-dir data/val \
-  --output-file features/val_features.npz
-```
+## Included pipeline features
 
-This saves:
-
-- `features`: learned feature vectors from the CNN's `features` layer
-- `labels`: numeric class labels
-- `class_indices`: mapping from class names to indices
-
-## Project files
-
-- `src/train_cnn.py` — model creation and training pipeline
-- `src/extract_features.py` — feature extraction from trained CNN
-- `requirements.txt` — Python dependencies
-
-## Notes
-
-- The model uses a CNN with a `GlobalAveragePooling2D` layer named `features` so the feature vectors are easy to extract.
-- The training pipeline is designed for binary classification (`Parasitized` vs `Uninfected`).
-- You can replace the dataset directories with your own images and keep the same structure.
+- data augmentation for improved generalization
+- validation and test evaluation
+- confusion matrix visualization
+- precision/recall/F1 metrics
+- model checkpointing and early stopping
+- feature extraction support via the existing `src/extract_features.py` script
